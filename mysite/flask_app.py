@@ -106,7 +106,7 @@ def form():
                 <input type="file" name="series_file" style="float: left"/><input type="submit" style="height: 45px"/>
             </form>
             <hr>
-            <p align="center"><em>Made with ❤ by <a href="mailto:twright@hey.com">Thomas Wright</a></em></h6>
+            <p align="center"><em>Made with &#x2764;&nbsp;&nbsp;for Team Hermione</em></h6>
         </body>
     </html>
 """
