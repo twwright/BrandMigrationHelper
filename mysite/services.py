@@ -75,6 +75,8 @@ def services(data_file):
 
         servsheet.cell(row=idx + 1, column=14).value = 0
 
+    servsheet.delete_rows(idx=allrows, amount=2)
+
     # SAVE WORKBOOK
     response = HttpResponse(content=save_virtual_workbook(servbook), content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=services-output.xlsx'

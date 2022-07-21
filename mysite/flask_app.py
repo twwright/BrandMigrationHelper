@@ -16,7 +16,7 @@ def transform_products():
         return products.products(f)
 
 def transform_inventory():
-    with open('products.xlsx', 'rb') as f:
+    with open('inventory.xlsx', 'rb') as f:
         return products.inventory(f)
 
 def transform_series():
@@ -125,7 +125,7 @@ def transform_services_view():
   return Response(
         transform_services(),
         headers={
-            'Content-Disposition': 'attachment; filename=servies-output.xlsx',
+            'Content-Disposition': 'attachment; filename=services-output.xlsx',
             'Content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         }
     )
