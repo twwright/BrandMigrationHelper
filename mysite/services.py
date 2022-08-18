@@ -1,6 +1,7 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from django.http import HttpResponse
+#import csv
 
 # SERVICES
 
@@ -36,48 +37,67 @@ def services(data_file):
     allrows = copyservsheet.max_row
 
     for idx in range(1, allrows + 1):
-        a = copyservsheet.cell(row=idx, column=1)
-        servsheet.cell(row=idx + 1, column=1).value = a.value
+        name = copyservsheet.cell(row=idx, column=1)
+        servsheet.cell(row=idx + 1, column=1).value = name.value
 
-        b = copyservsheet.cell(row=idx, column=2)
-        servsheet.cell(row=idx + 1, column=2).value = b.value
-        if b.value == "Add-ons":
+        category = copyservsheet.cell(row=idx, column=2)
+        servsheet.cell(row=idx + 1, column=2).value = category.value
+
+        sub_category = copyservsheet.cell(row=idx, column=3)
+        servsheet.cell(row=idx + 1, column=3).value = sub_category.value
+
+        sku = copyservsheet.cell(row=idx, column=4)
+        servsheet.cell(row=idx + 1, column=10).value = sku.value
+
+        # barcode stays empty
+
+        duration = copyservsheet.cell(row=idx, column=9)
+        servsheet.cell(row=idx + 1, column=6).value = duration.value
+
+        recovery_time = copyservsheet.cell(row=idx, column=11)
+        if recovery_time.value == None:
+           servsheet.cell(row=idx + 1, column=7).value = 0
+        else:
+          servsheet.cell(row=idx + 1, column=7).value = recovery_time.value
+
+        # service type stays empty
+
+        allow_online = copyservsheet.cell(row=idx, column=7)
+        if allow_online.value == 1:
+           servsheet.cell(row=idx + 1, column=9).value = allow_online.value
+        else:
+          servsheet.cell(row=idx + 1, column=9).value = 0
+
+        description = copyservsheet.cell(row=idx, column=4)
+        servsheet.cell(row=idx + 1, column=10).value = description.value
+
+        requires_two = copyservsheet.cell(row=idx, column=8)
+        if requires_two.value == 1:
+            servsheet.cell(row=idx + 1, column=11).value = requires_two.value
+        else:
+           servsheet.cell(row=idx + 1, column=11).value = 0
+
+        price = copyservsheet.cell(row=idx, column=12)
+        servsheet.cell(row=idx + 1, column=12).value = price.value
+
+        # sets "Addon" value in column M
+        if category.value == "Add-ons":
            servsheet.cell(row=idx + 1, column=13).value = 1
         else:
            servsheet.cell(row=idx + 1, column=13).value = 0
 
-        c = copyservsheet.cell(row=idx, column=3)
-        servsheet.cell(row=idx + 1, column=3).value = c.value
-
-        d = copyservsheet.cell(row=idx, column=4)
-        servsheet.cell(row=idx + 1, column=10).value = d.value
-
-        g = copyservsheet.cell(row=idx, column=11)
-        if g.value == None:
-           servsheet.cell(row=idx + 1, column=7).value = 0
-        else:
-          servsheet.cell(row=idx + 1, column=7).value = g.value
-
-        h = copyservsheet.cell(row=idx, column=8)
-        servsheet.cell(row=idx + 1, column=11).value = h.value
-
-        i = copyservsheet.cell(row=idx, column=9)
-        servsheet.cell(row=idx + 1, column=6).value = i.value
-
-        k = copyservsheet.cell(row=idx, column=8)
-        if k.value == 1:
-            servsheet.cell(row=idx + 1, column=11).value = k.value
-        else:
-           servsheet.cell(row=idx + 1, column=11).value = 0
-
-        l = copyservsheet.cell(row=idx, column=12)
-        servsheet.cell(row=idx + 1, column=12).value = l.value
-
+        # gives special_event a value in column N
         servsheet.cell(row=idx + 1, column=14).value = 0
 
     servsheet.delete_rows(idx=allrows, amount=2)
 
-    # SAVE WORKBOOK
+    #converts service sheet to csv file
+    #csv_version = csv.writer(open("services-upload.csv",'w', newline = ""))
+    #for row in servsheet.rows:
+    #    new_row = [cell.value for cell in row]
+    #    csv_version.writerow(new_row)
+
+# SAVE WORKBOOK
     response = HttpResponse(content=save_virtual_workbook(servbook), content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=services-output.xlsx'
     return response

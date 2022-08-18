@@ -43,7 +43,12 @@ def series(data_file):
         serisheet.cell(row=idx + 1, column=5).value = e.value
 
         f = copyserisheet.cell(row=idx + 1, column=6)
-        serisheet.cell(row=idx + 1, column=6).value = f.value
+        if f.value == 0:
+            serisheet.cell(row=idx + 1, column=6).value = "No"
+        elif f.value == 1:
+            serisheet.cell(row=idx + 1, column=6).value = "Yes"
+        else:
+            serisheet.cell(row=idx + 1, column=6).value = ""
 
         g = copyserisheet.cell(row=idx + 1, column=7)
         serisheet.cell(row=idx + 1, column=7).value = g.value
@@ -63,9 +68,9 @@ def series(data_file):
         l = copyserisheet.cell(row=idx + 1, column=12)
         serisheet.cell(row=idx + 1, column=12).value = l.value
 
-        m = copyserisheet.cell(row=idx + 1, column=3)
-        serisheet.cell(row=idx + 1, column=3).value = m.value
-    
+        m = copyserisheet.cell(row=idx + 1, column=13)
+        serisheet.cell(row=idx + 1, column=13).value = m.value
+
     response = HttpResponse(content=save_virtual_workbook(seribook), content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=series-output.xlsx'
     return response
