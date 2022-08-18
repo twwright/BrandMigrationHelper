@@ -1,24 +1,23 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from django.http import HttpResponse
+from datetime import datetime
 
-def series(data_file):
-    seribook = Workbook()
-    serisheet = seribook.active
+def cseries(data_file):
+    cseribook = Workbook()
+    cserisheet = cseribook.active
 
-    serisheet["A1"] = "Name"
-    serisheet["B1"] = "SKU"
-    serisheet["C1"] = "Description"
-    serisheet["D1"] = "Staff Fee"
-    serisheet["E1"] = "Staff Fee Value"
-    serisheet["F1"] = "Sell Online"
-    serisheet["G1"] = "Quantity"
-    serisheet["H1"] = "Unit Price"
-    serisheet["I1"] = "Discount"
-    serisheet["J1"] = "Sell Price"
-    serisheet["K1"] = "Expires"
-    serisheet["L1"] = "ExpValue"
-    serisheet["M1"] = "Services"
+    cserisheet["A1"] = "SeriesName"
+    cserisheet["B1"] = "SKU"
+    cserisheet["C1"] = "CustomerFirstName"
+    cserisheet["D1"] = "CustomerLastName"
+    cserisheet["E1"] = "CustomerGUID"
+    cserisheet["F1"] = "OriginalQuantity"
+    cserisheet["G1"] = "QuantityUsed"
+    cserisheet["H1"] = "PurchasePrice"
+    cserisheet["I1"] = "DateIssued"
+    cserisheet["J1"] = "ExpirationDate"
+    cserisheet["K1"] = "SeriesNumber"
 
     copyseribook = load_workbook(data_file)
     copyserisheet = copyseribook.active
@@ -27,50 +26,43 @@ def series(data_file):
     allrows = copyserisheet.max_row
 
     for idx in range(1, allrows):
-        a = copyserisheet.cell(row=idx + 1, column=1)
-        serisheet.cell(row=idx + 1, column=1).value = "b" + a.value
+        series_name = copyserisheet.cell(row=idx + 1, column=1)
+        cserisheet.cell(row=idx + 1, column=1).value = "b" + series_name.value
 
-        b = copyserisheet.cell(row=idx + 1, column=2)
-        serisheet.cell(row=idx + 1, column=2).value = "b" + b.value
+        sku = copyserisheet.cell(row=idx + 1, column=2)
+        cserisheet.cell(row=idx + 1, column=2).value = "b" + sku.value
 
-        c = copyserisheet.cell(row=idx + 1, column=3)
-        serisheet.cell(row=idx + 1, column=3).value = c.value
+        first_name = copyserisheet.cell(row=idx + 1, column=3)
+        cserisheet.cell(row=idx + 1, column=3).value = first_name.value
 
-        d = copyserisheet.cell(row=idx + 1, column=4)
-        serisheet.cell(row=idx + 1, column=4).value = d.value
+        last_name = copyserisheet.cell(row=idx + 1, column=4)
+        cserisheet.cell(row=idx + 1, column=4).value = last_name.value
 
-        e = copyserisheet.cell(row=idx + 1, column=5)
-        serisheet.cell(row=idx + 1, column=5).value = e.value
+        guid = copyserisheet.cell(row=idx + 1, column=5)
+        cserisheet.cell(row=idx + 1, column=5).value = guid.value
 
-        f = copyserisheet.cell(row=idx + 1, column=6)
-        if f.value == 0:
-            serisheet.cell(row=idx + 1, column=6).value = "No"
-        elif f.value == 1:
-            serisheet.cell(row=idx + 1, column=6).value = "Yes"
-        else:
-            serisheet.cell(row=idx + 1, column=6).value = ""
+        original_quantity = copyserisheet.cell(row=idx + 1, column=6)
+        cserisheet.cell(row=idx + 1, column=6).value = original_quantity.value
 
-        g = copyserisheet.cell(row=idx + 1, column=7)
-        serisheet.cell(row=idx + 1, column=7).value = g.value
+        used_quantity = copyserisheet.cell(row=idx + 1, column=7)
+        cserisheet.cell(row=idx + 1, column=7).value = used_quantity.value
 
-        h = copyserisheet.cell(row=idx + 1, column=8)
-        serisheet.cell(row=idx + 1, column=8).value = h.value
+        price = copyserisheet.cell(row=idx + 1, column=8)
+        cserisheet.cell(row=idx + 1, column=8).value = price.value
 
-        i = copyserisheet.cell(row=idx + 1, column=9)
-        serisheet.cell(row=idx + 1, column=9).value = i.value
+        issued = copyserisheet.cell(row=idx + 1, column=9)
+        # Converts issued date to shortformat
+        issuedf = f"{issued.value.month}/{issued.value.day}/{issued.value.year}"
+        cserisheet.cell(row=idx + 1, column=9).value = issuedf
 
-        j = copyserisheet.cell(row=idx + 1, column=10)
-        serisheet.cell(row=idx + 1, column=10).value = j.value
+        expiration = copyserisheet.cell(row=idx + 1, column=10)
+        expirationf = f"{expiration.value.month}/{expiration.value.day}/{expiration.value.year}"
+        cserisheet.cell(row=idx + 1, column=10).value = expirationf
 
-        k = copyserisheet.cell(row=idx + 1, column=11)
-        serisheet.cell(row=idx + 1, column=11).value = k.value
+        series_number = copyserisheet.cell(row=idx + 1, column=11)
+        cserisheet.cell(row=idx + 1, column=11).value = series_number.value
 
-        l = copyserisheet.cell(row=idx + 1, column=12)
-        serisheet.cell(row=idx + 1, column=12).value = l.value
 
-        m = copyserisheet.cell(row=idx + 1, column=13)
-        serisheet.cell(row=idx + 1, column=13).value = m.value
-
-    response = HttpResponse(content=save_virtual_workbook(seribook), content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename=series-output.xlsx'
+    response = HttpResponse(content=save_virtual_workbook(cseribook), content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=customer-series-output.xlsx'
     return response

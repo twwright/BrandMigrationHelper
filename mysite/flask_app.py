@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 import services
 import products
 import series
+import customer_series
 
 app = Flask(__name__)
 
@@ -22,6 +23,10 @@ def transform_inventory():
 def transform_series():
     with open('series.xlsx', 'rb') as f:
         return series.series(f)
+
+def transform_customer_series():
+    with open('cseries.xlsx', 'rb') as f:
+        return customer_series.cseries(f)
 
 # PRIMARY GET ROUTE
 
@@ -106,6 +111,11 @@ def form():
                 <input type="file" name="series_file" style="float: left"/><input type="submit" style="height: 45px"/>
             </form>
             <hr>
+            <h2>Customer Series</h2>
+            <form action="/transform_customer_series" method="post" enctype="multipart/form-data">
+                <input type="file" name="cseries_file" style="float: left"/><input type="submit" style="height: 45px"/>
+            </form>
+            <hr>
             <p align="center"><em>Made with &#x2764;&nbsp;&nbsp;for Team Hermione</em></h6>
         </body>
     </html>
@@ -177,6 +187,23 @@ def transform_series_view():
         transform_series(),
         headers={
             'Content-Disposition': 'attachment; filename=series-output.xlsx',
+            'Content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+    )
+
+@app.route('/transform_customer_series', methods=["POST"])
+def transform_customer_series_view():
+  request_file = request.files['cseries_file']
+  request_file.save("cseries.xlsx")
+  if not request_file:
+    return "No file"
+
+  result = transform_customer_series()
+  print(result)
+  return Response(
+        transform_customer_series(),
+        headers={
+            'Content-Disposition': 'attachment; filename=customer-series-output.xlsx',
             'Content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         }
     )
