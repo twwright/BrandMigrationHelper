@@ -52,12 +52,18 @@ def cseries(data_file):
 
         issued = copyserisheet.cell(row=idx + 1, column=9)
         # Converts issued date to shortformat
-        issuedf = f"{issued.value.month}/{issued.value.day}/{issued.value.year}"
-        cserisheet.cell(row=idx + 1, column=9).value = issuedf
+        if issued.value != None:
+            issuedf = f"{issued.value.month}/{issued.value.day}/{issued.value.year}"
+            cserisheet.cell(row=idx + 1, column=9).value = issuedf
+        else:
+            cserisheet.cell(row=idx + 1, column=9).value = issued.value
 
         expiration = copyserisheet.cell(row=idx + 1, column=10)
-        expirationf = f"{expiration.value.month}/{expiration.value.day}/{expiration.value.year}"
-        cserisheet.cell(row=idx + 1, column=10).value = expirationf
+        if expiration.value != None:
+            expirationf = f"{expiration.value.month}/{expiration.value.day}/{expiration.value.year}"
+            cserisheet.cell(row=idx + 1, column=10).value = expirationf
+        else:
+            cserisheet.cell(row=idx + 1, column=10).value = expiration.value
 
         series_number = copyserisheet.cell(row=idx + 1, column=11)
         cserisheet.cell(row=idx + 1, column=11).value = series_number.value
